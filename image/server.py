@@ -13,6 +13,7 @@ import tempfile
 import match
 import uuid
 
+image_db = 'images.json'
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 context.load_cert_chain('server.crt', 'server.key')
 
@@ -50,15 +51,18 @@ def name_to_file(name):
 
 def save_image(name, filename):
     try:
-        json_data = json.loads(open('images.json').read())            
+        json_data = json.loads(open(image_db).read())
     except:
         json_data = {}
 
-    json_data[name] = filename
-    with open(json_file, 'w') as json_file:
-        json.dump(json_decoded, json_file)    
-    
-    
+    json_data.update({name:filename})
+    print(json_data)
+    try:
+        f = open(image_db, 'w') 
+        f.write(json.dumps(json_data))
+        f.close()
+    except:
+        return
 
 @app.route('/api/v1/compare', methods=['POST'])
 @require_appkey
