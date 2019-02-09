@@ -11,6 +11,7 @@ import base64
 from werkzeug import secure_filename
 import tempfile
 import match
+import uuid
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 context.load_cert_chain('server.crt', 'server.key')
@@ -46,6 +47,18 @@ def name_to_file(name):
         return json_data[name]
     except:
         return None
+
+def save_image(name, filename):
+    try:
+        json_data = json.loads(open('images.json').read())            
+    except:
+        json_data = {}
+
+    json_data[name] = filename
+    with open(json_file, 'w') as json_file:
+        json.dump(json_decoded, json_file)    
+    
+    
 
 @app.route('/api/v1/compare', methods=['POST'])
 @require_appkey
@@ -86,6 +99,39 @@ def compare():
 
     return Response(response=response_pickled, status=200, mimetype="application/json")
 
+@app.route('/api/v1/add_image', methods=['POST'])
+@require_appkey
+def add_image():
+    json_str = request.json
+    json_out = json.loads(json_str)
+    
+    if json_out['image'] is None or json_out['name'] is None:
+        response = {'message': 'missing image or name'}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+    
+    image = json_out['image']
+    name = json_out['name']
+
+    data = base64.b64decode(image)
+    image_file = ""
+    try:
+        image_file =str(uuid.uuid4()) + '.jpg'
+        f = open(image_file, 'wb') 
+        f.write(data)
+        f.close()
+    except:
+        response = {'message': 'invalid image'}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    save_image(name, image_file)
+    
+    response = {'message': 'succeed'}
+    response_pickled = jsonpickle.encode(response)
+    return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    
 @app.route('/')
 def index_page():
     return 'Welcome'
