@@ -65,7 +65,7 @@ def save_image(name, filename):
         return
 
 @app.route('/api/v1/compare', methods=['POST'])
-@require_appkey
+#@require_appkey
 def compare():
     json_str = request.json
     json_out = json.loads(json_str)
@@ -104,7 +104,7 @@ def compare():
     return Response(response=response_pickled, status=200, mimetype="application/json")
 
 @app.route('/api/v1/add_image', methods=['POST'])
-@require_appkey
+#@require_appkey
 def add_image():
     json_str = request.json
     json_out = json.loads(json_str)

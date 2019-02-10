@@ -5,10 +5,11 @@ import base64
 import json
 
 def send_request(img, key, url, name="test"):
-    if key is None or url is None or img is None:
+    if url is None or img is None:
         return None
     j = {'name': name, "image": img}
-    headers = {'x-api-key': key, 'Content-Type': 'application/json'}
+    #headers = {'x-api-key': key, 'Content-Type': 'application/json'}
+    headers = {'Content-Type': 'application/json'}
     r = requests.post(url, json=json.dumps(j), headers=headers)
     return r
 

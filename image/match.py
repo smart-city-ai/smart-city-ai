@@ -6,6 +6,7 @@ from __future__ import print_function
 from pprint import pprint
 import numpy as np
 import cv2
+import sys
 from extract import seg_img
 
 min_kp1_size = 10
