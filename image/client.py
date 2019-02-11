@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# ./client.py --url=http://127.0.0.1:5000/api/v1/add_image --image=./test.jpeg --name=test
 
 import requests
 import base64
