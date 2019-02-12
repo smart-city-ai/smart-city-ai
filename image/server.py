@@ -187,4 +187,5 @@ def add_image():
 def index_page():
     return 'Welcome'
 
-app.run(host='0.0.0.0',port=5000, debug = False/True, ssl_context=context)
+#app.run(host='0.0.0.0',port=5000, debug = False/True, ssl_context=context)
+app.run(host='0.0.0.0',port=5000, debug = False/True)

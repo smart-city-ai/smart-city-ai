@@ -4,4 +4,5 @@ RUN pip3 install flask jsonpickle numpy imutils requests
 
 COPY match.py extract.py server.py server.* /opt/images/
 WORKDIR /opt/images
-ENTRYPOINT ["python3" "server.py"]
+ENTRYPOINT ["python3"]
+CMD ["server.py"]
