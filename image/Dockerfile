@@ -1,5 +1,5 @@
-From jjanzic/docker-python3-opencv:contrib-opencv-3.4.2
-
+From fedora:28
+RUN dnf install python3-opencv opencv-contrib python3-pip -y
 RUN pip3 install flask jsonpickle numpy imutils requests
 
 COPY match.py extract.py server.py server.* /opt/images/
