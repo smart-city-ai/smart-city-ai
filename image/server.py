@@ -103,6 +103,53 @@ def compare():
 
     return Response(response=response_pickled, status=200, mimetype="application/json")
 
+
+@app.route('/api/v1/compare_images', methods=['POST'])
+#@require_appkey
+def compare_images():
+    json_str = request.json
+    json_out = json.loads(json_str)
+    
+    if json_out['truth_image'] is None or json_out['verify_image'] is None:
+        response = {'message': 'missing truth image or verify image'}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+    
+    ground_truth = json_out['truth_image']
+    verify_image = json_out['verify_image']
+
+    truth_data = base64.b64decode(ground_truth)
+    truth_file = ""
+    verify_data = base64.b64decode(verify_image)
+    verify_file = ""
+    
+    try:
+        truth_file = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False).name
+        print("truth image file:" + truth_file)
+        f = open(truth_file, 'wb') 
+        f.write(truth_data)
+        f.close()
+
+        verify_file = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False).name
+        print("verify image file:" + verify_file)
+        f = open(verify_file, 'wb') 
+        f.write(verify_data)
+        f.close()
+        
+    except:
+        response = {'message': 'invalid image'}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+    print("compare {} and {}".format(verify_file, truth_file))
+    draws = match.compare_two('akaze', verify_file, truth_file)
+    response = json.dumps(draws)
+    print(response)
+    # encode response using jsonpickle
+    response_pickled = jsonpickle.encode(response)
+
+    return Response(response=response_pickled, status=200, mimetype="application/json")
+
+
 @app.route('/api/v1/add_image', methods=['POST'])
 #@require_appkey
 def add_image():
